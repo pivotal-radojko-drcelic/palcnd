@@ -29,4 +29,14 @@ public class GreetingsControllerIT {
                 () -> assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK),
                 () -> assertThat(response.getBody()).isEqualTo("I'm ready for PAL"));
     }
+
+    /***
+     * Test that environment variable properly set through maven failsafe plugin
+     */
+    @Test
+    public void readEnvironmentVariable() {
+        String environmentVariableValue = System.getenv("SPRING_DATASOURCE_URL");
+
+        assertThat(environmentVariableValue).isNotNull().isNotEmpty();
+    }
 }

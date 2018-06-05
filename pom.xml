@@ -37,7 +37,7 @@
             <artifactId>lombok</artifactId>
             <scope>provided</scope>
         </dependency>
-
+        
         <!-- testing -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -113,6 +113,11 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
+                <configuration>
+                    <environmentVariables>
+                        <SPRING_DATASOURCE_URL>jdbc:mysql://localhost:3306/demo_dev?user=demo&amp;useSSL=false&amp;useTimezone=true&amp;serverTimezone=UTC&amp;useLegacyDatetimeCode=false</SPRING_DATASOURCE_URL>
+                    </environmentVariables>
+                </configuration>
                 <executions>
                     <execution>
                         <goals>
