@@ -40,12 +40,8 @@ public class TimeEntryController {
     @GetMapping(value = "/{id}")
     public ResponseEntity<?> getTimeEntry(@PathVariable Long id) {
         TimeEntry timeEntry = timeEntryRepository.find(id);
-        HttpStatus status = HttpStatus.OK;
-        if (timeEntry == null) {
-            status = HttpStatus.NOT_FOUND;
-        }
         return ResponseEntity
-                .status(status)
+                .status(HttpStatus.OK)
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .body(timeEntry);
     }

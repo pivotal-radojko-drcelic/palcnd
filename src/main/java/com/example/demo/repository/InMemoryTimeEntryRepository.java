@@ -4,6 +4,7 @@ import com.example.demo.model.TimeEntry;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
@@ -25,7 +26,9 @@ public class InMemoryTimeEntryRepository implements TimeEntryRepository {
 
     @Override
     public TimeEntry find(long id) {
-        return dataStorage.get(id);
+        TimeEntry timeEntry = dataStorage.get(id);
+        if (timeEntry == null) throw new NoSuchElementException("No such time entry");
+        return timeEntry;
     }
 
     @Override
