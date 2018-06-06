@@ -37,7 +37,15 @@
             <artifactId>lombok</artifactId>
             <scope>provided</scope>
         </dependency>
-        
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-jdbc</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.liquibase</groupId>
+            <artifactId>liquibase-core</artifactId>
+        </dependency>
+
         <!-- testing -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -86,6 +94,11 @@
             <version>3.7.0</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>runtime</scope>
+        </dependency>
 	</dependencies>
 
 	<build>
@@ -115,7 +128,7 @@
                 <artifactId>maven-failsafe-plugin</artifactId>
                 <configuration>
                     <environmentVariables>
-                        <SPRING_DATASOURCE_URL>jdbc:mysql://localhost:3306/demo_dev?user=demo&amp;useSSL=false&amp;useTimezone=true&amp;serverTimezone=UTC&amp;useLegacyDatetimeCode=false</SPRING_DATASOURCE_URL>
+                        <SPRING_DATASOURCE_URL>jdbc:h2:file:~/test?user=sa</SPRING_DATASOURCE_URL> <!-- the name of the database is default name, you can change it but it doens't make any difference of H2 -->
                     </environmentVariables>
                 </configuration>
                 <executions>

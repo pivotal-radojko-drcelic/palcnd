@@ -1,0 +1,14 @@
+# prior to spring boot 2.x this is the liquibase configuration
+liquibase:
+  change-log: classpath:db/changelog/changelog-master.yml
+
+# starting with spring boot 2.x this is the liquibase configuration
+spring:
+  liquibase:
+    change-log: classpath:db/changelog/changelog-master.yml
+
+  h2:
+    # H2 console is visible under http://localhost:8080/h2
+    console:
+      enabled: true
+      path: /h2
