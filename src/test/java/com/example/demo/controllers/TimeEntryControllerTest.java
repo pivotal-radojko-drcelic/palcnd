@@ -3,11 +3,13 @@ package com.example.demo.controllers;
 import com.example.demo.DemoApplication;
 import com.example.demo.model.TimeEntry;
 import com.jayway.jsonpath.DocumentContext;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -19,15 +21,23 @@ import java.util.Collection;
 import static com.jayway.jsonpath.JsonPath.parse;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = DemoApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class TimeEntryControllerTest {
 
-    @Autowired
+    @LocalServerPort
+    private String port;
     private TestRestTemplate restTemplate;
-
     private TimeEntry timeEntry = new TimeEntry(123L, 456L, LocalDate.parse("2017-01-08"), 8);
+
+    @Before
+    public void setup() throws Exception {
+        RestTemplateBuilder builder = new RestTemplateBuilder()
+                .rootUri("http://localhost:" + port)
+                .basicAuthorization("user", "password"); // parameters are comming from SecurityConfiguration
+
+        restTemplate = new TestRestTemplate(builder);
+    }
 
     @Test
     public void testCreate() throws Exception {

@@ -2,12 +2,15 @@ package com.example.demo.controllers;
 
 import com.jayway.jsonpath.DocumentContext;
 import org.assertj.core.api.JUnitSoftAssertions;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -28,8 +31,18 @@ public class GreetingsControllerIT {
     @Rule
     public final JUnitSoftAssertions softly = new JUnitSoftAssertions();
 
-    @Autowired
+    @LocalServerPort
+    private String port;
     private TestRestTemplate restTemplate;
+
+    @Before
+    public void setup() throws Exception {
+        RestTemplateBuilder builder = new RestTemplateBuilder()
+                .rootUri("http://localhost:" + port)
+                .basicAuthorization("user", "password"); // parameters are comming from SecurityConfiguration
+
+        restTemplate = new TestRestTemplate(builder);
+    }
 
     @Test
     public void readyForPalGreeting() throws Exception {
