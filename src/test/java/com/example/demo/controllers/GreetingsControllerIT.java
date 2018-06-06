@@ -1,5 +1,8 @@
 package com.example.demo.controllers;
 
+import com.jayway.jsonpath.DocumentContext;
+import org.assertj.core.api.JUnitSoftAssertions;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +15,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import static com.jayway.jsonpath.JsonPath.parse;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.assertj.core.api.BDDAssertions.then;
@@ -19,6 +23,10 @@ import static org.assertj.core.api.BDDAssertions.then;
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class GreetingsControllerIT {
+
+    // If don't want JUnit 5 then can use soft assertions from AssertJ
+    @Rule
+    public final JUnitSoftAssertions softly = new JUnitSoftAssertions();
 
     @Autowired
     private TestRestTemplate restTemplate;
@@ -49,23 +57,24 @@ public class GreetingsControllerIT {
         ResponseEntity<Map> entity = this.restTemplate.getForEntity(
                 "/actuator/info", Map.class);
 
-        then(entity.getStatusCode()).isEqualTo(HttpStatus.OK);
-        then(entity.getBody().get("build")).isNotNull();
-        then(entity.getBody().get("easter_egg")).isNotNull();
+        assertAll(
+                () -> then(entity.getStatusCode()).isEqualTo(HttpStatus.OK),
+                () -> then(entity.getBody().get("build")).isNotNull(),
+                () -> then(entity.getBody().get("easter_egg")).isNotNull());
     }
 
     @Test
     public void shouldReturnHealthInformationWhenSendingRequestToManagementEndpoint() throws Exception {
         @SuppressWarnings("rawtypes")
-        ResponseEntity<Map> entity = this.restTemplate.getForEntity(
-                "/actuator/health", Map.class);
+        ResponseEntity<String> response = this.restTemplate.getForEntity(
+                "/actuator/health", String.class);
 
-        if (entity.getBody().get("details") == null) {
-            throw new Exception("Invalid health result format");
-        }
+        DocumentContext healthJson = parse(response.getBody());
 
-        LinkedHashMap<String, LinkedHashMap> details = (LinkedHashMap)entity.getBody().get("details");
-        then(entity.getStatusCode()).isEqualTo(HttpStatus.OK);
-        then(details.get("timeEntry")).isNotNull();
+        softly.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        softly.assertThat(healthJson.read("$.status", String.class)).isEqualTo("UP");
+        softly.assertThat(healthJson.read("$.details.db.status", String.class)).isEqualTo("UP");
+        softly.assertThat(healthJson.read("$.details.diskSpace.status", String.class)).isEqualTo("UP");
+        softly.assertThat(healthJson.read("$.details.timeEntry.status", String.class)).isEqualTo("UP");
     }
 }
