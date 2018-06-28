@@ -8,6 +8,6 @@ public class GreetingsController {
 
     @GetMapping("/greeting")
     public String readyForPalGreeting() {
-        return "I'm doing PAL";
+        return "I'm ready after PAL";
     }
 }
