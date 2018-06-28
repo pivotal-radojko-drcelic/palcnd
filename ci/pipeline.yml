@@ -1,0 +1,16 @@
+---
+resources:
+- name: source-code-resource
+  type: git
+  source:
+    uri: {{source-code-resource-uri}}
+    branch: {{source-code-resource-branch}}
+
+jobs:
+- name: job-build-and-verify
+  plan:
+  - get: source-code-resource
+    trigger: true
+  - task: build-and-verify
+    file: source-code-resource/ci/tasks/maven-build.yml
+    input_mapping: {source-code: source-code-resource}
