@@ -1,16 +1,156 @@
 ---
+resource_types:
+- name: artifactory
+  type: docker-image
+  source:
+    repository: pivotalservices/artifactory-resource
+
 resources:
 - name: source-code-resource
   type: git
   source:
     uri: {{source-code-resource-uri}}
+    private_key: {{github-private-key}}
     branch: {{source-code-resource-branch}}
+
+- name: version-resource
+  type: semver
+  source:
+    driver: git
+    initial_version: 0.0.1
+    uri: {{source-code-resource-uri}}
+    private_key: {{github-private-key}}
+    branch: version
+    file: version
+
+- name: artifact-repository
+  type: artifactory
+  source:
+    endpoint: {{repo-uri}}
+    repository: {{repo-release-folder}}
+    regex: {{repo-release-regex}}
+    username: {{repo-username}}
+    password: {{repo-password}}
+    skip_ssl_verification: true
+
+- name: pcf-resource
+  type: cf
+  source:
+    api: {{cf-api}}
+    username: {{cf-username}}
+    password: {{cf-password}}
+    organization: {{cf-org}}
+    space: {{cf-space}}
+    skip_cert_check: false
+
+- name: acceptance-test-resource
+  type: git
+  source:
+    uri: {{acceptance-test-resource-uri}}
+    private_key: {{github-private-key}}
+    branch: {{acceptance-test-resource-branch}}
+
+- name: candidate-artifact-resource
+  type: artifactory
+  source:
+    endpoint: {{repo-uri}}
+    repository: {{repo-candidate-folder}}
+    regex: {{repo-release-regex}}
+    username: {{repo-username}}
+    password: {{repo-password}}
+    skip_ssl_verification: true
 
 jobs:
 - name: job-build-and-verify
   plan:
   - get: source-code-resource
     trigger: true
+  - get: version-resource
+    params: { pre: rc }
   - task: build-and-verify
     file: source-code-resource/ci/tasks/maven-build.yml
-    input_mapping: {source-code: source-code-resource}
+    input_mapping: {source-code: source-code-resource, version: version-resource}
+    output_mapping: {build: built-artifact}
+    params:
+     BRANCH: {{source-code-resource-branch}}
+     M2_SETTINGS_REPO_ID : {{m2-settings-repo-id}}
+     M2_SETTINGS_REPO_USERNAME : {{m2-settings-repo-username}}
+     M2_SETTINGS_REPO_PASSWORD : {{m2-settings-repo-password}}
+     M2_SETTINGS_REPO_RELEASE_URI : {{m2-settings-repo-release-uri}}
+     M2_SETTINGS_REPO_SNAPSHOT_URI : {{m2-settings-repo-snapshot-uri}}
+  - put: artifact-repository
+    params:
+      file: {{artifact-to-publish}}
+
+- name: job-deploy
+  plan:
+  - get: artifact-repository
+    trigger: true
+    passed: [job-build-and-verify]
+  - get: source-code-resource
+  - task: generate-manifest
+    file: source-code-resource/ci/tasks/generate-manifest.yml
+    input_mapping: {source-code: source-code-resource, artifact: artifact-repository}
+    params:
+      APP_NAME: {{cf-app-name}}
+      APP_HOST: {{cf-app-host}}
+      APP_DOMAIN: {{cf-app-domain}}
+  - put: pcf-resource
+    params:
+      manifest: manifest/manifest.yml
+
+- name: job-acceptance-test
+  plan:
+  - get: artifact-repository
+    trigger: true
+    passed: [job-deploy]
+  - get: acceptance-test-resource
+    trigger: true
+  - get: source-code-resource
+  - task: run-acceptance-test
+    file: source-code-resource/ci/tasks/maven-test.yml
+    input_mapping: {acceptance-test: acceptance-test-resource, source-code: source-code-resource}
+    params:
+      APP_DOMAIN: {{cf-app-domain}}
+      APP_HOST: {{cf-app-host}}
+      APP_USER: {{app-user}}
+      APP_USERPWD: {{app-user-password}}
+      M2_SETTINGS_REPO_ID: {{m2-settings-repo-id}}
+      M2_SETTINGS_REPO_USERNAME: {{repo-username}}
+      M2_SETTINGS_REPO_PASSWORD: {{repo-password}}
+      M2_SETTINGS_REPO_RELEASE_URI: {{m2-settings-repo-release-uri}}
+      M2_SETTINGS_REPO_SNAPSHOT_URI: {{m2-settings-repo-snapshot-uri}}
+  - put: version-resource
+    params: { pre: rc }
+  - task: promote-build
+    file: source-code-resource/ci/tasks/promote-build.yml
+    input_mapping: {version: version-resource, build: artifact-repository, source-code: source-code-resource}
+    output_mapping: {release-candidate: install-artifact}
+  - put: candidate-artifact-resource
+    params:
+      file: install-artifact/*
+
+- name: increase-major
+  serial: true
+  plan:
+  - put: version-resource
+    params: { bump: major }
+
+- name: increase-minor
+  serial: true
+  plan:
+  - put: version-resource
+    params: { bump: minor }
+
+
+groups:
+- name: build-deploy-acceptancetest-release
+  jobs:
+  - job-build-and-verify
+  - job-deploy
+  - job-acceptance-test
+- name: versioning
+  jobs:
+  - increase-major
+  - increase-minor
+  

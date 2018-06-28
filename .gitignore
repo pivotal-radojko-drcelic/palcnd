@@ -1,6 +1,7 @@
 /target
 /build-output
 /version
+secrets.yml
 
 ### STS ###
 .apt_generated
