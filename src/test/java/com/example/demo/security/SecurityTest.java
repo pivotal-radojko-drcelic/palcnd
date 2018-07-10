@@ -1,9 +1,9 @@
 package com.example.demo.security;
 
 import com.example.demo.DemoApplication;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -11,12 +11,13 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class) // Integration tests with JUnit5 require this instead @RunWith
 @SpringBootTest(classes = DemoApplication.class, webEnvironment = RANDOM_PORT)
 public class SecurityTest {
 
@@ -27,7 +28,7 @@ public class SecurityTest {
     @Autowired
     private TestRestTemplate unAuthorizedRestTemplate;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         RestTemplateBuilder builder = new RestTemplateBuilder()
                 .rootUri("http://localhost:" + port)

@@ -2,18 +2,17 @@ package com.example.demo.controllers;
 
 import com.jayway.jsonpath.DocumentContext;
 import org.assertj.core.api.JUnitSoftAssertions;
-import org.junit.Before;
 import org.junit.Rule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -23,7 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.assertj.core.api.BDDAssertions.then;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class GreetingsControllerIT {
 
@@ -35,7 +34,7 @@ public class GreetingsControllerIT {
     private String port;
     private TestRestTemplate restTemplate;
 
-    @Before
+    @BeforeEach
     public void setup() throws Exception {
         RestTemplateBuilder builder = new RestTemplateBuilder()
                 .rootUri("http://localhost:" + port)
