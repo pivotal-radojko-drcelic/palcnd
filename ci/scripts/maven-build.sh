@@ -1,4 +1,7 @@
 #!/bin/bash
+set -e
+
+../tasks/generate-mvn-settings.sh
 
 cd source-code || echo "missing input resource: source-code"
 
