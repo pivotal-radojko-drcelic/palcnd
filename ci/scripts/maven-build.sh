@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-bash ./generate-mvn-settings.sh
+./ci/scripts/generate-mvn-settings.sh
 
 cd source-code || echo "missing input resource: source-code"
 
