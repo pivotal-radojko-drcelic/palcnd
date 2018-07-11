@@ -3,6 +3,7 @@ package com.example.demotest;
 import cucumber.api.CucumberOptions;
 import cucumber.api.junit.Cucumber;
 import io.restassured.RestAssured;
+import io.restassured.parsing.Parser;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 
@@ -19,6 +20,7 @@ public class ActuatorTest {
         if (port != null) {
             RestAssured.port = Integer.valueOf(port);
         }
+        RestAssured.defaultParser = Parser.JSON;
     }
 
 }
