@@ -27,7 +27,7 @@ jobs:
     input_mapping: {source-code: source-code-resource, version: version-resource}
     output_mapping: {build: build-artifact}
     params:
-     BRANCH: {{sourse-code-resource-branch}}
+     BRANCH: {{source-code-resource-branch}}
      M2_SETTINGS_REPO_ID : {{m2-settings-repo-id}}
      M2_SETTINGS_REPO_USERNAME : {{m2-settings-repo-username}}
      M2_SETTINGS_REPO_PASSWORD : {{m2-settings-repo-password}}
