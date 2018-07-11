@@ -12,4 +12,4 @@ outputs:
   - name: release-candidate
 
 run:
-  path: source-code/ci/tasks/promote-build.sh
+  path: source-code/ci/scripts/promote-build.sh

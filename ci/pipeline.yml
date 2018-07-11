@@ -113,6 +113,8 @@ jobs:
     params:
       APP_DOMAIN: {{cf-app-domain}}
       APP_HOST: {{cf-app-host}}
+      APP_USER: {{app-user}}
+      APP_USERPWD: {{app-user-password}}
       M2_SETTINGS_REPO_ID: {{m2-settings-repo-id}}
       M2_SETTINGS_REPO_USERNAME: {{repo-username}}
       M2_SETTINGS_REPO_PASSWORD: {{repo-password}}
