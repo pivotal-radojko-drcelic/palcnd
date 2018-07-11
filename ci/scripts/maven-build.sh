@@ -3,7 +3,7 @@ set -e
 
 ./source-code/ci/scripts/generate-mvn-settings.sh
 
-./source-code/ci/scripts/common.sh
+source ./source-code/ci/scripts/common.sh
 
 VERSION=$(build_version "./version" "number" "./source-code" $BRANCH)
 echo "Version to build: ${VERSION}"
