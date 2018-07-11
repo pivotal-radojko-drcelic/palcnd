@@ -1,4 +1,10 @@
 ---
+resource_types:
+- name: artifactory
+  type: docker-image
+  source:
+    repository: pivotalservices/artifactory-resource
+
 resources:
 - name: source-code-resource
   type: git
@@ -16,6 +22,16 @@ resources:
     private_key: {{github-private-key}}
     branch: version
     file: version
+
+- name: artifact-repository
+  type: artifactory
+  source:
+    endpoint: {{repo-uri}}
+    repository: {{repo-release-folder}}
+    regex: {{repo-release-regex}}
+    username: {{repo-username}}
+    password: {{repo-password}}
+    skip_ssl_verification: true
 
 jobs:
 - name: job-build-and-verify
@@ -35,6 +51,9 @@ jobs:
      M2_SETTINGS_REPO_PASSWORD : {{m2-settings-repo-password}}
      M2_SETTINGS_REPO_RELEASE_URI : {{m2-settings-repo-release-uri}}
      M2_SETTINGS_REPO_SNAPSHOT_URI : {{m2-settings-repo-snapshot-uri}}
+  - put: artifact-repository
+    params:
+      file: {{artifact-to-publish}}
 
 - name: increase-major
   serial: true

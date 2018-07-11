@@ -16,3 +16,7 @@ mvn verify ${MAVEN_ARGS}
 
 echo "Copying artifact to ./build "
 cp target/*.jar ../build
+
+ls ../build
+cd ../build
+pwd
