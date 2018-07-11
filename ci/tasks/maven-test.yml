@@ -9,4 +9,4 @@ inputs:
   - name: source-code
 
 run:
-  path: source-code/ci/tasks/maven-test.sh
+  path: source-code/ci/scripts/maven-test.sh
