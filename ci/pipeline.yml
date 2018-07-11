@@ -33,6 +33,16 @@ resources:
     password: {{repo-password}}
     skip_ssl_verification: true
 
+- name: pcf-resource
+  type: cf
+  source:
+    api: {{cf-api}}
+    username: {{cf-username}}
+    password: {{cf-password}}
+    organization: {{cf-org}}
+    space: {{cf-space}}
+    skip_cert_check: false
+
 jobs:
 - name: job-build-and-verify
   plan:
@@ -55,6 +65,23 @@ jobs:
     params:
       file: {{artifact-to-publish}}
 
+- name: job-deploy
+  plan:
+  - get: artifact-repository
+    trigger: true
+    passed: [job-build-and-verify]
+  - get: pipeline-resource
+  - task: generate-manifest
+    file: source-code-resource/tasks/generate-manifest.yml
+    input_mapping: {pipeline: source-code-resource, artifact: artifact-repository}
+    params:
+      APP_NAME: {{cf-app-name}}
+      APP_HOST: {{cf-app-host}}
+      APP_DOMAIN: {{cf-app-domain}}
+  - put: pcf-resource
+    params:
+      manifest: manifest/manifest.yml
+      
 - name: increase-major
   serial: true
   plan:
