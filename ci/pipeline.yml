@@ -70,7 +70,7 @@ jobs:
   - get: artifact-repository
     trigger: true
     passed: [job-build-and-verify]
-  - get: pipeline-resource
+  - get: source-code-resource
   - task: generate-manifest
     file: source-code-resource/tasks/generate-manifest.yml
     input_mapping: {pipeline: source-code-resource, artifact: artifact-repository}
