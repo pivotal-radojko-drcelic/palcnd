@@ -2,7 +2,7 @@
 
 set -e
 
-./source-code/ci/tasks/generate-settings.sh
+./source-code/ci/scripts/generate-settings.sh
 
 cd acceptance-test || echo "missing input resource: acceptance-test"
 
