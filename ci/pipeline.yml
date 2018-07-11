@@ -113,11 +113,11 @@ jobs:
     params:
       APP_DOMAIN: {{cf-app-domain}}
       APP_HOST: {{cf-app-host}}
-      M2_SETTINGS_REPO_ID: {{repo-id}}
+      M2_SETTINGS_REPO_ID: {{m2-settings-repo-id}}
       M2_SETTINGS_REPO_USERNAME: {{repo-username}}
       M2_SETTINGS_REPO_PASSWORD: {{repo-password}}
-      M2_SETTINGS_REPO_RELEASE_URI: {{repo-release-uri}}
-      M2_SETTINGS_REPO_SNAPSHOT_URI: {{repo-snapshot-uri}}
+      M2_SETTINGS_REPO_RELEASE_URI: {{m2-settings-repo-release-uri}}
+      M2_SETTINGS_REPO_SNAPSHOT_URI: {{m2-settings-repo-snapshot-uri}}
   - put: version-resource
     params: { pre: rc }
   - task: promote-build
