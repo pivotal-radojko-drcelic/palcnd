@@ -9,6 +9,7 @@ VERSION=$(build_version "./version" "number" "./source-code" $BRANCH)
 echo "Version to build: ${VERSION}"
 
 cd source-code || echo "missing input resource: source-code"
+mvn versions:set -DnewVersion=${VERSION}
 
 echo "Using MAVEN_OPTS: ${MAVEN_OPTS}"
 
