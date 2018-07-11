@@ -23,6 +23,3 @@ pwd
 echo "build folder full path: "
 cd ../build
 pwd
-popd
-echo "this is restored full path to task container root:"
-pwd
