@@ -4,6 +4,7 @@ import cucumber.api.java8.En;
 import io.restassured.response.Response;
 
 import static io.restassured.RestAssured.get;
+import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.is;
 
 public class ActuatorSteps implements En {
@@ -12,7 +13,7 @@ public class ActuatorSteps implements En {
 
     public ActuatorSteps() {
         When("^I ask for its health$", () -> {
-            response = get("/health");
+            response = given().auth().basic("user", "password").get("/actuator/health");
         });
 
         Then("^its status should be UP$", () -> {
