@@ -43,6 +43,23 @@ resources:
     space: {{cf-space}}
     skip_cert_check: false
 
+- name: acceptance-test-resource
+  type: git
+  source:
+    uri: {{acceptance-test-resource-uri}}
+    private_key: {{github-private-key}}
+    branch: {{acceptance-test-resource-branch}}
+
+- name: candidate-artifact-resource
+  type: artifactory
+  source:
+    endpoint: {{repo-uri}}
+    repository: {{repo-candidate-folder}}
+    regex: {{repo-release-regex}}
+    username: {{repo-username}}
+    password: {{repo-password}}
+    skip_ssl_verification: true
+
 jobs:
 - name: job-build-and-verify
   plan:
@@ -82,6 +99,35 @@ jobs:
     params:
       manifest: manifest/manifest.yml
 
+- name: job-acceptance-test
+  plan:
+  - get: artifact-repository
+    trigger: true
+    passed: [job-deploy]
+  - get: acceptance-test-resource
+    trigger: true
+  - get: source-code-resource
+  - task: run-acceptance-test
+    file: source-code-resource/ci/tasks/maven-test.yml
+    input_mapping: {acceptance-test: acceptance-test-resource, source-code: source-code-resource}
+    params:
+      APP_DOMAIN: {{cf-app-domain}}
+      APP_HOST: {{cf-app-host}}
+      M2_SETTINGS_REPO_ID: {{repo-id}}
+      M2_SETTINGS_REPO_USERNAME: {{repo-username}}
+      M2_SETTINGS_REPO_PASSWORD: {{repo-password}}
+      M2_SETTINGS_REPO_RELEASE_URI: {{repo-release-uri}}
+      M2_SETTINGS_REPO_SNAPSHOT_URI: {{repo-snapshot-uri}}
+  - put: version-resource
+    params: { pre: rc }
+  - task: promote-build
+    file: source-code-resource/ci/tasks/promote-build.yml
+    input_mapping: {version: version-resource, build: artifact-repository, source-code: source-code-resource}
+    output_mapping: {release-candidate: install-artifact}
+  - put: candidate-artifact-resource
+    params:
+      file: install-artifact/*
+
 - name: increase-major
   serial: true
   plan:
@@ -106,3 +152,6 @@ groups:
 - name: deploy
   jobs:
   - job-deploy
+- name: acceptance-test
+  jobs:
+  - job-acceptance-test

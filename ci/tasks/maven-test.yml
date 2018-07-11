@@ -1,0 +1,12 @@
+---
+platform: linux
+image_resource:
+  type: docker-image
+  source: {repository: maven, tag: 3.3.9-jdk-8}
+
+inputs:
+  - name: acceptance-test
+  - name: source-code
+
+run:
+  path: source-code/ci/tasks/maven-test.sh
