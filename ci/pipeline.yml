@@ -72,8 +72,8 @@ jobs:
     passed: [job-build-and-verify]
   - get: source-code-resource
   - task: generate-manifest
-    file: source-code-resource/tasks/generate-manifest.yml
-    input_mapping: {pipeline: source-code-resource, artifact: artifact-repository}
+    file: source-code-resource/ci/tasks/generate-manifest.yml
+    input_mapping: {source-code: source-code-resource, artifact: artifact-repository}
     params:
       APP_NAME: {{cf-app-name}}
       APP_HOST: {{cf-app-host}}
