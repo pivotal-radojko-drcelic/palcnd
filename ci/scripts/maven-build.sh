@@ -14,9 +14,14 @@ echo "Using MAVEN_OPTS: ${MAVEN_OPTS}"
 
 mvn verify ${MAVEN_ARGS}
 
+echo "Here is ../build"
+cd ../build
+pwd
+echo "Here is ./build"
+cd ./build
+pwd
 echo "Copying artifact to ./build "
 cp target/*.jar ../build
-
 ls ../build
 cd ../build
 pwd

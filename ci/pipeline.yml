@@ -43,10 +43,7 @@ jobs:
   - task: build-and-verify
     file: source-code-resource/ci/tasks/maven-build.yml
     input_mapping: {source-code: source-code-resource, version: version-resource}
-    config:
-      outputs:
-      - name: build-artifact
-    output_mapping: {build: build-artifact}
+    output_mapping: {build: built-artifact}
     params:
      BRANCH: {{source-code-resource-branch}}
      M2_SETTINGS_REPO_ID : {{m2-settings-repo-id}}
