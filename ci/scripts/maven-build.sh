@@ -14,14 +14,15 @@ echo "Using MAVEN_OPTS: ${MAVEN_OPTS}"
 
 mvn verify ${MAVEN_ARGS}
 
-echo "Here is ../build"
-cd ../build
-pwd
-echo "Here is ./build"
-cd ./build
-pwd
 echo "Copying artifact to ./build "
 cp target/*.jar ../build
+echo "Content of build folder: "
 ls ../build
+echo "this is full path to task container root:"
+pwd
+echo "build folder full path: "
 cd ../build
+pwd
+popd
+echo "this is restored full path to task container root:"
 pwd
