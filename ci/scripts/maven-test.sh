@@ -2,7 +2,7 @@
 
 set -e
 
-./source-code/ci/scripts/generate-settings.sh
+./source-code/ci/scripts/generate-mvn-settings.sh
 
 cd acceptance-test || echo "missing input resource: acceptance-test"
 
