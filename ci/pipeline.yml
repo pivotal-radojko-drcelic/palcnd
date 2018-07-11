@@ -81,7 +81,7 @@ jobs:
   - put: pcf-resource
     params:
       manifest: manifest/manifest.yml
-      
+
 - name: increase-major
   serial: true
   plan:
@@ -103,3 +103,6 @@ groups:
   jobs:
   - increase-major
   - increase-minor
+- name: deploy
+  jobs:
+  - job-deploy
