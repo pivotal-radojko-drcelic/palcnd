@@ -1,0 +1,14 @@
+/target
+/build-output
+/version
+secrets.yml
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+/out/
+
+.DS_Store
+secrets.yml
