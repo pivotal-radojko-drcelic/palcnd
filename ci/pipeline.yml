@@ -6,17 +6,52 @@ resources:
     uri: {{source-code-resource-uri}}
     branch: {{source-code-resource-branch}}
 
+- name: version-resource
+  type: semver
+  source:
+    driver: git
+    initial_version: 0.0.1
+    uri: {{source-code-resource-uri}}
+    branch: version
+    file: version
+
 jobs:
 - name: job-build-and-verify
   plan:
   - get: source-code-resource
     trigger: true
+  - get: version-resource
+    params: { pre: rc }
   - task: build-and-verify
     file: source-code-resource/ci/tasks/maven-build.yml
-    input_mapping: {source-code: source-code-resource}
+    input_mapping: {source-code: source-code-resource, version: version-resource}
+    output_mapping: {build: build-artifact}
     params:
+     BRANCH: {{sourse-code-resource-branch}}
      M2_SETTINGS_REPO_ID : {{m2-settings-repo-id}}
      M2_SETTINGS_REPO_USERNAME : {{m2-settings-repo-username}}
      M2_SETTINGS_REPO_PASSWORD : {{m2-settings-repo-password}}
      M2_SETTINGS_REPO_RELEASE_URI : {{m2-settings-repo-release-uri}}
      M2_SETTINGS_REPO_SNAPSHOT_URI : {{m2-settings-repo-snapshot-uri}}
+
+- name: increase-major
+  serial: true
+  plan:
+  - put: version-resource
+    params: { bump: major }
+
+- name: increase-minor
+  serial: true
+  plan:
+  - put: version-resource
+    params: { bump: minor }
+
+
+groups:
+- name: build
+  jobs:
+  - job-build-and-verify
+- name: versioning
+  jobs:
+  - increase-major
+  - increase-minor
