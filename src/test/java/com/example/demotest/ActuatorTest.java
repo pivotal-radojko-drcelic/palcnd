@@ -7,6 +7,8 @@ import io.restassured.parsing.Parser;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 
+import static io.restassured.RestAssured.basic;
+
 @RunWith(Cucumber.class)
 @CucumberOptions(
         features = "classpath:actuator.feature"
@@ -22,6 +24,10 @@ public class ActuatorTest {
         }
         RestAssured.defaultParser = Parser.JSON;
         RestAssured.useRelaxedHTTPSValidation();
+        RestAssured.authentication = basic(
+                (System.getProperty("appUser", System.getenv("appUser"))),
+                (System.getProperty("appUserPassword", System.getenv("appUserPassword"))));
+
     }
 
 }

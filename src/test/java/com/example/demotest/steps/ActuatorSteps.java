@@ -13,9 +13,7 @@ public class ActuatorSteps implements En {
 
     public ActuatorSteps() {
         When("^I ask for its health$", () -> {
-            String userName = System.getProperty("appUser", System.getenv("appUser"));
-            String userPassword = System.getProperty("appUserPassword", System.getenv("appUserPassword"));
-            response = given().auth().basic(userName, userPassword).log().all().get("/actuator/health");
+            response = given().log().all().get("/actuator/health");
         });
 
         Then("^its status should be UP$", () -> {
