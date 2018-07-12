@@ -144,16 +144,13 @@ jobs:
 
 
 groups:
-- name: build
+- name: build-deploy-acceptancetest-release
   jobs:
   - job-build-and-verify
+  - job-deploy
+  - job-acceptance-test
 - name: versioning
   jobs:
   - increase-major
   - increase-minor
-- name: deploy
-  jobs:
-  - job-deploy
-- name: acceptance-test
-  jobs:
-  - job-acceptance-test
+  
