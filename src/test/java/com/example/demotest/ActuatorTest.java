@@ -21,6 +21,7 @@ public class ActuatorTest {
             RestAssured.port = Integer.valueOf(port);
         }
         RestAssured.defaultParser = Parser.JSON;
+        RestAssured.useRelaxedHTTPSValidation();
     }
 
 }
