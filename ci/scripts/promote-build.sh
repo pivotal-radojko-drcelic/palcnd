@@ -2,7 +2,7 @@
 
 set -e
 
-source ./source-code/ci/tasks/common.sh
+source ./source-code/ci/scripts/common.sh
 
 RELEASE_CANDIDATE_VERSION=$(current_sem_ver "./version" "number")
 
