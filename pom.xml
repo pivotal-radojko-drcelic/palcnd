@@ -145,7 +145,7 @@
                 </configuration>
 			</plugin>
 
-            <!-- integration testing -->
+            <!-- unit testing -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
@@ -160,12 +160,14 @@
                     </excludes>
                 </configuration>
             </plugin>
+            <!-- integration testing -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
                 <configuration>
                     <environmentVariables>
-                        <SPRING_DATASOURCE_URL>jdbc:h2:file:~/test?user=sa</SPRING_DATASOURCE_URL> <!-- the name of the database is default name, you can change it but it doens't make any difference of H2 -->
+                        <!--<SPRING_DATASOURCE_URL>jdbc:h2:file:~/test?user=sa</SPRING_DATASOURCE_URL> &lt;!&ndash; the name of the database is default name, you can change it but it doens't make any difference of H2 &ndash;&gt;-->
+                        <SPRING_DATASOURCE_URL>jdbc:mysql://localhost:3306/demo_dev?user=demouser&amp;useSSL=false&amp;useTimezone=true&amp;serverTimezone=UTC&amp;useLegacyDatetimeCode=false</SPRING_DATASOURCE_URL>
                     </environmentVariables>
                 </configuration>
                 <executions>

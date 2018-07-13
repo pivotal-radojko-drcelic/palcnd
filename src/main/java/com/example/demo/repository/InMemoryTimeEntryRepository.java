@@ -9,7 +9,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
-@Component
 public class InMemoryTimeEntryRepository implements TimeEntryRepository {
 
     private ConcurrentHashMap<Long, TimeEntry> dataStorage = new ConcurrentHashMap<>();
