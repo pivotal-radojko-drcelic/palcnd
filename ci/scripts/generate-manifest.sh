@@ -25,6 +25,8 @@ applications:
   host: ${APP_HOST}
   path: ${APP_PATH}
   domain: ${APP_DOMAIN}
+  services:
+   - test-db
 EOF
 
 cat manifest.yml
