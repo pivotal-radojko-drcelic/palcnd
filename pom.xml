@@ -44,6 +44,7 @@
         <dependency>
             <groupId>org.liquibase</groupId>
             <artifactId>liquibase-core</artifactId>
+            <version>3.6.0</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -52,6 +53,12 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>6.0.6</version>
+            <scope>runtime</scope>
         </dependency>
 
         <!-- testing -->
@@ -105,7 +112,7 @@
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
-            <scope>runtime</scope>
+            <scope>test</scope>
         </dependency>
 	</dependencies>
 
@@ -114,6 +121,7 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+                <version>2.1.0.BUILD-SNAPSHOT</version>
                 <executions>
                     <!-- created META-INF/build-info.properties, use /actuator/info to see them -->
                     <execution>
@@ -130,6 +138,11 @@
                         </configuration>
                     </execution>
                 </executions>
+                <configuration>
+                    <environmentVariables>
+                        <SPRING_DATASOURCE_URL>jdbc:mysql://localhost:3306/demo_dev?user=demouser&amp;useSSL=false&amp;useTimezone=true&amp;serverTimezone=UTC&amp;useLegacyDatetimeCode=false</SPRING_DATASOURCE_URL>
+                    </environmentVariables>
+                </configuration>
 			</plugin>
 
             <!-- integration testing -->
@@ -174,5 +187,16 @@
             </extension>
         </extensions>
 	</build>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>spring-snapshots</id>
+            <url>https://repo.spring.io/snapshot</url>
+        </pluginRepository>
+        <pluginRepository>
+            <id>spring-milestones</id>
+            <url>https://repo.spring.io/milestone</url>
+        </pluginRepository>
+    </pluginRepositories>
 
 </project>
